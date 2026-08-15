@@ -5,7 +5,8 @@ public class BASIC_CALCULATOR {
         BASIC_CALCULATOR object = new BASIC_CALCULATOR();
         Scanner scanner = new Scanner(System.in);
         int first_number = 0;
-        char operation = '.';
+        String temp;
+        char operation = ' ';
         int second_number = 0;
         try {
             System.out.println("ENTER FIRST NUMBER :");
@@ -14,12 +15,20 @@ public class BASIC_CALCULATOR {
                 scanner.next();
             }
             first_number = scanner.nextInt();
+            scanner.nextLine();
             System.out.println("ENTER OPERATION : (+,-,*,/)");
-            operation = scanner.next(".").charAt(0);
+            temp = scanner.nextLine().trim();
+            if (temp.length() == 1) {
+                operation = temp.charAt(0);
+            }
             while (operation != '+' && operation != '-' && operation != '*' && operation != '/') {
                 System.out.println("ENTER OPERATION : (+,-,*,/)");
-                operation = scanner.next(".").charAt(0);
+                temp = scanner.nextLine().trim();
+                if (temp.trim().length() == 1) {
+                    operation = temp.charAt(0);
+                }
             }
+
             System.out.println("ENTER SECOND NUMBER :");
             while (!scanner.hasNextInt()) {
                 System.out.println("ENTER SECOND NUMBER :");
