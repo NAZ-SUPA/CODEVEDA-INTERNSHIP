@@ -1,12 +1,44 @@
+import java.math.BigInteger;
+import java.util.Scanner;
+
 public class FACTORIAL_CALCULATION_BY_RECURSION {
     public static void main(String[] args) throws Exception {
-        System.out.println(factorial(5));
+        FACTORIAL_CALCULATION_BY_RECURSION object = new FACTORIAL_CALCULATION_BY_RECURSION();
+        Scanner scanner = new Scanner(System.in);
+        long number;
+        System.out.println("FACTORIAL CALCULATOR BY RECURSION :");
+        System.out.println("-------------------------------");
+        try {
+            while (true) {
+                System.out.println("ENTER NON-NEGATIVE NUMBER :");
+                while (!scanner.hasNextInt()) {
+                    System.out.println("ENTER NON-NEGATIVE NUMBER :");
+                    scanner.next();
+                }
+                number = scanner.nextInt();
+
+                while (number < 0) {
+                    System.out.println("ENTER NON-NEGATIVE NUMBER :");
+                    while (!scanner.hasNextInt()) {
+                        System.out.println("ENTER NON-NEGATIVE NUMBER :");
+                        scanner.next();
+                    }
+                    number = scanner.nextInt();
+                }
+                System.out.println("FACTORIAL FOR " + number + " IS = " + object.factorial(number));
+                System.out.println("-------------------------------");
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            scanner.close();
+        }
+
     }
 
-    static int factorial(int number) {
+    public BigInteger factorial(long number) {
         if (number == 0 || number == 1) {
-            return 1;
+            return BigInteger.ONE;
         }
-        return number * factorial(number - 1);
+        return BigInteger.valueOf(number).multiply(factorial(number - 1));
     }
 }
