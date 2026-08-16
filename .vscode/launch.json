@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "FACTORIAL_CALCULATION_BY_RECURSION",
+            "request": "launch",
+            "mainClass": "FACTORIAL_CALCULATION_BY_RECURSION",
+            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+        },
+        {
+            "type": "java",
             "name": "NUMBER_GUESSING_GAME",
             "request": "launch",
             "mainClass": "NUMBER_GUESSING_GAME",
