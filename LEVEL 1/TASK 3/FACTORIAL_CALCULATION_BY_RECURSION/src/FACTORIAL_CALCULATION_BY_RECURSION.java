@@ -29,7 +29,6 @@ public class FACTORIAL_CALCULATION_BY_RECURSION {
                 System.out.println("-------------------------------");
             }
         } catch (Exception e) {
-            // TODO: handle exception
             scanner.close();
         }
 
