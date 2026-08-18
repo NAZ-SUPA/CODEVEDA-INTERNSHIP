@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "EMPLOYEE_MANAGEMENT_SYSTEM",
+            "request": "launch",
+            "mainClass": "EMPLOYEE_MANAGEMENT_SYSTEM",
+            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+        },
+        {
+            "type": "java",
             "name": "FACTORIAL_CALCULATION_BY_RECURSION",
             "request": "launch",
             "mainClass": "FACTORIAL_CALCULATION_BY_RECURSION",
