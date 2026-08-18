@@ -2,8 +2,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class EMPLOYEE_MANAGEMENT_SYSTEM {
-    public ArrayList<String> names = new ArrayList<>();
-    public ArrayList<Integer> salaries = new ArrayList<>();
+    public int ID = 1;
+    public ArrayList<Employee> employees = new ArrayList<>();
     public String name = "";
     public int salary = 0;
     public Scanner scanner = new Scanner(System.in);
@@ -48,8 +48,7 @@ public class EMPLOYEE_MANAGEMENT_SYSTEM {
     }
 
     public void add() {
-        int old = object.names.size();
-        int old2 = object.salaries.size();
+        int old = object.employees.size();
         System.out.println("NAME :");
         try {
             while (!object.scanner.hasNextLine()) {
@@ -65,7 +64,6 @@ public class EMPLOYEE_MANAGEMENT_SYSTEM {
                 }
                 object.name = object.scanner.nextLine();
             }
-            object.names.add(object.name);
             System.out.println("SALARY (500-30000) :");
             while (!object.scanner.hasNextInt()) {
                 System.out.println("PLEASE ENTER A VALID SALARY (NNUMBER)(500-3000):");
@@ -84,14 +82,17 @@ public class EMPLOYEE_MANAGEMENT_SYSTEM {
             }
         } catch (Exception e) {
         }
-        object.salaries.add(object.salary);
-        if (old < object.names.size() && old2 < object.salaries.size()) {
+        object.employees.add(new Employee(object.ID, object.name, object.salary));
+        object.ID++;
+
+        if (old < object.employees.size()) {
             System.out.println("EMPLOYEE ADDED TO THE SYSTEM SUCCESFULLY");
             System.out.println("-----------------------------------------");
             System.out.println();
             System.out.println("DETAILS :");
             System.out.println("-----------------------------------------");
-            System.out.println("ID : " + names.size() + " | NAME :" + object.name + " | SALARY : " + object.salary);
+            System.out.println(
+                    "ID : " + object.employees.size() + " | NAME :" + object.name + " | SALARY : " + object.salary);
             System.out.println();
         }
         return;
@@ -105,16 +106,16 @@ public class EMPLOYEE_MANAGEMENT_SYSTEM {
         System.out.println();
         try {
 
-            for (int i = 0; i < object.names.size(); i++) {
+            for (int i = 0; i < object.employees.size(); i++) {
                 System.out.print(i + 1 + "    |  ");
-                System.out.print(object.names.get(i) + "   |  ");
-                System.out.print(object.salaries.get(i));
+                System.out.print(object.employees.get(i).getName() + "   |  ");
+                System.out.print(object.employees.get(i).getSalary());
                 System.out.println();
             }
         } catch (Exception e) {
         }
         System.out.println();
-        System.out.println(object.names.size() + " RECORDS.");
+        System.out.println(object.employees.size() + " RECORDS.");
         System.out.println("-----------------------------------------");
         System.out.println();
         return;
@@ -131,21 +132,21 @@ public class EMPLOYEE_MANAGEMENT_SYSTEM {
                 object.scanner.nextInt();
             }
             id = Integer.parseInt(object.scanner.nextLine().trim());
-            if ((id - 1) < 0 || (id - 1) >= object.names.size()) {
+            if ((id - 1) < 0 || (id - 1) >= object.employees.size()) {
                 System.out.println("ID IS NOT EXIST");
                 return;
             } else {
 
-                old_name = object.names.get(id - 1);
-                old_salary = object.salaries.get(id - 1);
+                old_name = object.employees.get(id - 1).getName();
+                old_salary = object.employees.get(id - 1).getSalary();
                 System.out.println("EMPLOYEE");
                 System.out.println("-----------------------------------------");
                 System.out.println();
                 System.out.println("ID : | NAME : | SALARY : ");
                 System.out.println();
                 System.out.print(id + "    |  ");
-                System.out.print(object.names.get(id - 1) + "   |  ");
-                System.out.print(object.salaries.get(id - 1));
+                System.out.print(object.employees.get(id - 1).getName() + "   |  ");
+                System.out.print(object.employees.get(id - 1).getSalary());
                 System.out.println();
 
                 System.out.println("NAME :");
@@ -163,7 +164,7 @@ public class EMPLOYEE_MANAGEMENT_SYSTEM {
                         }
                         object.name = object.scanner.nextLine();
                     }
-                    object.names.set(id - 1, object.name);
+                    object.employees.get(id - 1).setName(object.name);
                     System.out.println("SALARY (500-30000) :");
                     while (!object.scanner.hasNextInt()) {
                         System.out.println("PLEASE ENTER A VALID SALARY (NNUMBER)(500-3000):");
@@ -187,8 +188,9 @@ public class EMPLOYEE_MANAGEMENT_SYSTEM {
 
         }
 
-        object.salaries.set(id - 1, object.salary);
-        if (!old_name.equals(object.names.get(id - 1)) || old_salary != object.salaries.get(id - 1)) {
+        object.employees.get(id - 1).setSalary(object.salary);
+        if (!old_name.equals(object.employees.get(id - 1).getName())
+                || old_salary != object.employees.get(id - 1).getSalary()) {
             System.out.println("EMPLOYEE UPDATED IN THE SYSTEM SUCCESFULLY");
             System.out.println("-----------------------------------------");
             System.out.println();
@@ -209,12 +211,11 @@ public class EMPLOYEE_MANAGEMENT_SYSTEM {
                 object.scanner.nextInt();
             }
             id = Integer.parseInt(object.scanner.nextLine().trim());
-            if ((id - 1) < 0 || (id - 1) >= object.names.size()) {
+            if ((id - 1) < 0 || (id - 1) >= object.employees.size()) {
                 System.out.println("ID IS NOT EXIST");
                 return;
             } else {
-                object.names.remove(id - 1);
-                object.salaries.remove(id - 1);
+                object.employees.remove(id - 1);
                 System.out.println("EMPLOYEE DELETED IN THE SYSTEM SUCCESSFULLY");
                 System.out.println("-----------------------------------------");
                 System.out.println();
@@ -224,5 +225,43 @@ public class EMPLOYEE_MANAGEMENT_SYSTEM {
 
         }
 
+    }
+}
+
+class Employee {
+    private int id;
+    private String name;
+    private int salary;
+
+    // Constructor
+    public Employee(int id, String name, int salary) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
     }
 }
