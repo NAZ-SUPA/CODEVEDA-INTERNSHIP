@@ -43,7 +43,7 @@ public class FILE_READER_WRITER {
                             if (words.length == 1 && words[0] == "") {
                                 writer.write("THE FILE IS EMPTY.");
                             } else {
-                                writer.write("FILE " + file_name + " CONTAINS " + words.length + " WORDS.");
+                                writer.write("FILE " + file_name + ".txt" + " CONTAINS " + words.length + " WORDS.");
                             }
                             writer.close();
                             System.out.println("SUCCESS: DATA WRITTEN TO result.txt");
