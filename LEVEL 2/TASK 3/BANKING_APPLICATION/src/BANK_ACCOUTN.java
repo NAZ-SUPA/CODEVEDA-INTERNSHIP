@@ -39,15 +39,15 @@ public class BANK_ACCOUTN {
                             break;
                     }
                 } else {
-                    System.out.println("CHOOSE A FUNCTION (DEPOSITE,WITHDRAW,CHECK) :");
+                    System.out.println("CHOOSE A FUNCTION (DEPOSIT,WITHDRAW,CHECK) :");
                     String function = object.scanner.nextLine().trim();
-                    while (!function.equalsIgnoreCase("DEPOSITE") && !function.equalsIgnoreCase("WITHDRAW")
+                    while (!function.equalsIgnoreCase("DEPOSIT") && !function.equalsIgnoreCase("WITHDRAW")
                             && !function.equalsIgnoreCase("CHECK")) {
-                        System.out.println("CHOOSE A VALID FUNCTION (DEPOSITE,WITHDRAW,CHECK) :");
+                        System.out.println("CHOOSE A VALID FUNCTION (DEPOSIT,WITHDRAW,CHECK) :");
                         function = object.scanner.nextLine().trim();
                     }
                     switch (function.toUpperCase()) {
-                        case "DEPOSITE":
+                        case "DEPOSIT":
                             object.deposit();
                             break;
                         case "WITHDRAW":
