@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "BankingApplication",
+            "request": "launch",
+            "mainClass": "BankingApplication",
+            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+        },
+        {
+            "type": "java",
+            "name": "BANKING_APPLICATION",
+            "request": "launch",
+            "mainClass": "BANKING_APPLICATION",
+            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+        },
+        {
+            "type": "java",
             "name": "FILE_READER_WRITER",
             "request": "launch",
             "mainClass": "FILE_READER_WRITER",
