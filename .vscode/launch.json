@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "FILE_READER_WRITER",
+            "request": "launch",
+            "mainClass": "FILE_READER_WRITER",
+            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+        },
+        {
+            "type": "java",
             "name": "EMPLOYEE_MANAGEMENT_SYSTEM",
             "request": "launch",
             "mainClass": "EMPLOYEE_MANAGEMENT_SYSTEM",

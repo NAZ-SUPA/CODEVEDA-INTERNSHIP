@@ -1,0 +1,1 @@
+A word counter is a tool or software feature that instantly calculates the total number of words in a text. Most modern counters also track characters, sentences, paragraphs, and reading times. People use them to stay within essay, article, or social media limits.
