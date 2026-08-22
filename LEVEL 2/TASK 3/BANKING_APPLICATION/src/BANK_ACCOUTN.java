@@ -198,8 +198,8 @@ public class BANK_ACCOUTN {
             System.out.println("THERE IS NO ENOUGH BALANCE FOR THIS TRANSACTION.");
         } else {
             object.accounts.get(object.logged_in - 1).setAmount(current_amount - amount);
+            System.out.println("THE TRANSACTION SUCCED.");
         }
-        System.out.println("THE TRANSACTION SUCCED.");
         System.out.println("-----------------------------------------");
         System.out.println();
         return;

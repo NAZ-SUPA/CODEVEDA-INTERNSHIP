@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "BANK_ACCOUTN",
+            "request": "launch",
+            "mainClass": "BANK_ACCOUTN",
+            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+        },
+        {
+            "type": "java",
             "name": "BankingApplication",
             "request": "launch",
             "mainClass": "BankingApplication",
