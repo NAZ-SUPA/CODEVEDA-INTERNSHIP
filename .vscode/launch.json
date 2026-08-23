@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LIBRARY_MANAGEMENT_SYSTEM",
+            "request": "launch",
+            "mainClass": "LIBRARY_MANAGEMENT_SYSTEM",
+            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+        },
+        {
+            "type": "java",
             "name": "BANK_ACCOUTN",
             "request": "launch",
             "mainClass": "BANK_ACCOUTN",
