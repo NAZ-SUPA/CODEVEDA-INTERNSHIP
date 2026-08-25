@@ -24,10 +24,17 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
 
         try {
             new LIBRARY_MANAGEMENT_SYSTEM();
-            intro();
+            boolean isRunning = true;
+
+            // This loop keeps the program alive!
+            while (isRunning) {
+                // We will let intro() return a boolean to tell us when to stop
+                isRunning = intro();
+            }
 
             if (connection != null) {
                 connection.close();
+                System.out.println("DATABASE CONNECTION CLOSED. GOODBYE!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -439,19 +446,31 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
         }
     }
 
-    public static void intro() {
+    public static boolean intro() { // Changed to return a boolean
 
         System.out.println();
-        System.out.println("WELCOME TO LIBRARY MANAGEMENT SYSTEM");
+        System.out.println("==============================================");
+        System.out.println("     WELCOME TO LIBRARY MANAGEMENT SYSTEM     ");
+        System.out.println("==============================================");
         System.out.println();
 
-        System.out.println("CHOOSE A WORKSPACE (BOOKS,USERS,TRANSACTIONS) :");
+        System.out.println("CHOOSE A WORKSPACE (BOOKS, USERS, TRANSACTIONS) OR TYPE 'EXIT' TO QUIT:");
         function = scanner.nextLine().trim();
+
+        // Add an exit condition!
+        if (function.equalsIgnoreCase("EXIT")) {
+            return false; // Tells the while loop in main() to stop
+        }
+
         while (!function.equalsIgnoreCase("BOOKS") && !function.equalsIgnoreCase("USERS")
                 && !function.equalsIgnoreCase("TRANSACTIONS")) {
-            System.out.println("CHOOSE A VALID WORKSPACE (BOOKS,USERS,TRANSACTIONS) :");
+            System.out.println("CHOOSE A VALID WORKSPACE (BOOKS, USERS, TRANSACTIONS) OR TYPE 'EXIT' TO QUIT:");
             function = scanner.nextLine().trim();
+            if (function.equalsIgnoreCase("EXIT")) {
+                return false;
+            }
         }
+
         switch (function.toUpperCase()) {
             case "BOOKS":
                 workspace = "books";
@@ -466,6 +485,8 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 function();
                 break;
         }
+
+        return true; // Tells the while loop in main() to keep going!
     }
 
     public static void function() {
