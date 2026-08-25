@@ -666,11 +666,10 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                     System.out.println("SORRY THIS BOOK IS ALREADY BORROWED.");
                     return;
                 } else {
-                    sql = "INSERT INTO Transactions (book_id,user_id,action_type) VALUES(?,?,?)";
+                    sql = "INSERT INTO Transactions (book_id,user_id) VALUES(?,?)";
                     try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
                         preapared_statment.setInt(1, book_id);
                         preapared_statment.setInt(2, user_id);
-                        preapared_statment.setString(3, "BORROW");
                         int row_affected = preapared_statment.executeUpdate();
                         if (row_affected > 0) {
                             System.out.println("THE BOOK BORROWED SUCCESSFULLY.");
@@ -826,7 +825,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 e.printStackTrace();
             }
 
-            sql = "SELECT transaction_id,action_type,borrow_date,return_date FROM Transactions WHERE user_id = ? AND book_id = ?";
+            sql = "SELECT transaction_id,borrow_date,return_date FROM Transactions WHERE user_id = ? AND book_id = ?";
             try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
                 preapared_statment.setInt(1, user_id);
                 preapared_statment.setInt(2, book_id);
@@ -841,7 +840,6 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                         found = true;
 
                         int transaction_id = result_set.getInt("transaction_id");
-                        String action_type = result_set.getString("action_type");
                         Date borrow_date = result_set.getDate("borrow_date");
                         String return_date_string = result_set.getString("return_date");
                         String display_return_date = (return_date_string == null) ? "STILL NOT RETURNED"
@@ -850,7 +848,6 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                         System.out.println("TRANSACTION ID : " + transaction_id);
                         System.out.println("BOOK ID : " + book_id);
                         System.out.println("USER ID : " + user_id);
-                        System.out.println("ACTION TYPE : " + action_type);
                         System.out.println("BORROW DATE : " + borrow_date);
                         System.out.println("RETURN DATE : " + display_return_date);
 
