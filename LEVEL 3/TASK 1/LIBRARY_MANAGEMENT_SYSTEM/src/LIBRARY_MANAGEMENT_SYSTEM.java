@@ -1,8 +1,10 @@
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class LIBRARY_MANAGEMENT_SYSTEM {
@@ -526,16 +528,513 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
         } else {
             switch (function) {
                 case "ADD":
+                    addTransation(connection);
                     break;
                 case "UPDATE":
+                    updateTransaction(connection);
                     break;
                 case "DELETE":
+                    deleteTransaction(connection);
                     break;
                 case "SEARCH":
+                    searchTransaction(connection);
                     break;
             }
         }
         return;
     }
 
+    public static void addTransation(Connection connection) {
+        int user_id = 0;
+        int book_id = 0;
+        String sql;
+        boolean is_borrowed = false;
+
+        try {
+            System.out.println("USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+            while (!scanner.hasNextInt()) {
+                System.out.println("ENTER A VALID USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                scanner.nextLine();
+            }
+            user_id = Integer.parseInt(scanner.nextLine().trim());
+            if (user_id < 0) {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("ENTER A VALID USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                    scanner.nextLine();
+                }
+                user_id = Integer.parseInt(scanner.nextLine().trim());
+            }
+
+            System.out.println("BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+            while (!scanner.hasNextInt()) {
+                System.out.println("ENTER A VALID BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                scanner.nextLine();
+            }
+            book_id = Integer.parseInt(scanner.nextLine().trim());
+            if (book_id < 0) {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("ENTER A VALID BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                    scanner.nextLine();
+                }
+                book_id = Integer.parseInt(scanner.nextLine().trim());
+            }
+
+            System.out.println("CHOOSE A FUNCTION (BORROW,RETURN) :");
+            String function = scanner.nextLine().trim();
+            while (!function.equalsIgnoreCase("BORROW") && !function.equalsIgnoreCase("RETURN")) {
+                System.out.println("CHOOSE A VALID FUNCTION (BORROW,RETURN) :");
+                function = scanner.nextLine().trim();
+            }
+
+            sql = "SELECT user_id FROM Users WHERE user_id = ?";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, user_id);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    boolean found = false;
+                    if (result_set.next()) {
+                        found = true;
+                    }
+                    if (!found) {
+                        System.out.println("NO USER FOUND WITH USER ID : " + user_id);
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            sql = "SELECT is_borrowed FROM Books WHERE book_id = ? ";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, book_id);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    boolean found = false;
+                    if (result_set.next()) {
+                        found = true;
+                        is_borrowed = result_set.getBoolean("is_borrowed");
+                    }
+                    if (!found) {
+                        System.out.println("NO BOOK FOUND WITH BOOK ID : " + book_id);
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (function.toUpperCase().equals("BORROW")) {
+            if (is_borrowed) {
+                System.out.println("SORRY THIS BOOK IS ALREADY BORROWED.");
+                return;
+            } else {
+                sql = "INSERT INTO Transactions (book_id,user_id,action_type) VALUES(?,?,?)";
+                try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                    preapared_statment.setInt(1, book_id);
+                    preapared_statment.setInt(2, user_id);
+                    preapared_statment.setString(3, "BORROW");
+                    int row_affected = preapared_statment.executeUpdate();
+                    if (row_affected > 0) {
+                        System.out.println("THE BORROW BORROWED SUCCESSFULLY.");
+                        return;
+                    } else {
+                        System.out.println("WARNING : THE TRANSACTION (BORROW) FAILED TO BE ADDED.");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                sql = "UPDATE Books SET is_borrowed = 1 WHERE book_id = ?";
+                try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                    preapared_statment.setInt(1, book_id);
+                    int row_affected = preapared_statment.executeUpdate();
+                    if (row_affected > 0) {
+                        System.out.println("THE BORROW NOW IS BORROWED.");
+                        return;
+                    } else {
+                        System.out.println("WARNING : THE PROCESS OF MAKING THE BORROWED IS FAILED.");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        } else {
+            if (!is_borrowed) {
+                System.out.println("THIS BOOKS IS NOT BORROWED.");
+            } else {
+                sql = "SELECT transaction_id FROM Transactions WHERE user_id = ? AND book_id =? AND return_date IS NULL";
+                try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                    preapared_statment.setInt(1, user_id);
+                    preapared_statment.setInt(2, book_id);
+                    try (ResultSet reasult_set = preapared_statment.executeQuery()) {
+                        if (!reasult_set.next()) {
+                            System.out.println(
+                                    "THIS BOOK IS NOT CURRENTLY BORROWED BY THIS USER OR NOT BORROWED AT ALL.");
+                        } else {
+                            sql = "UPDATE Transactions SET return_date = ? WHERE book_id =? AND user_id = ? AND return_date IS NULL";
+                            try (PreparedStatement preapared_statment_ = connection.prepareStatement(sql)) {
+                                preapared_statment_.setDate(1, Date.valueOf(LocalDate.now()));
+                                preapared_statment_.setInt(2, book_id);
+                                preapared_statment_.setInt(3, user_id);
+                                int row_affected = preapared_statment_.executeUpdate();
+                                if (row_affected > 0) {
+                                    System.out.println("THE BOOK RETURNED SUCCESSFULLY");
+                                } else {
+                                    System.out.println("WARNING : THE TRANSACTION (RETURN) FAILED TO BE ADDED.");
+                                }
+
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            sql = "UPDATE Books SET is_borrowed = 0 WHERE book_id = ?";
+                            try (PreparedStatement preapared_statment_ = connection.prepareStatement(sql)) {
+                                preapared_statment_.setInt(1, book_id);
+                                int row_affected = preapared_statment_.executeUpdate();
+                                if (row_affected > 0) {
+                                    System.out.println("THE BORROW NOW IS RETURNED AND AVAILABLE.");
+                                    return;
+                                } else {
+                                    System.out.println("WARNING : THE PROCESS OF MAKING THE BORROWED IS FAILED.");
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public static void searchTransaction(Connection connection) {
+        int user_id = 0;
+        int book_id = 0;
+        String sql;
+        try {
+            System.out.println("USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+            while (!scanner.hasNextInt()) {
+                System.out.println("ENTER A VALID USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                scanner.nextLine();
+            }
+            user_id = Integer.parseInt(scanner.nextLine().trim());
+            if (user_id < 0) {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("ENTER A VALID USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                    scanner.nextLine();
+                }
+                user_id = Integer.parseInt(scanner.nextLine().trim());
+            }
+
+            System.out.println("BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+            while (!scanner.hasNextInt()) {
+                System.out.println("ENTER A VALID BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                scanner.nextLine();
+            }
+            book_id = Integer.parseInt(scanner.nextLine().trim());
+            if (book_id < 0) {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("ENTER A VALID BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                    scanner.nextLine();
+                }
+                book_id = Integer.parseInt(scanner.nextLine().trim());
+            }
+            sql = "SELECT user_id FROM Users WHERE user_id = ?";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, user_id);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    boolean found = false;
+                    if (result_set.next()) {
+                        found = true;
+                    }
+                    if (!found) {
+                        System.out.println("NO USER FOUND WITH USER ID : " + user_id);
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            sql = "SELECT book_id FROM Books WHERE book_id = ? ";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, book_id);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    if (!result_set.next()) {
+                        System.out.println("NO BOOK FOUND WITH BOOK ID : " + book_id);
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            sql = "SELECT transaction_id,action_type,borrow_date,return_date FROM Transactions WHERE user_id = ? AND book_id = ?";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, user_id);
+                preapared_statment.setInt(2, book_id);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    boolean found = false;
+
+                    System.out.println();
+                    System.out.println("SEARCH RESULT : ");
+                    System.out.println();
+
+                    while (result_set.next()) {
+                        found = true;
+
+                        int transaction_id = result_set.getInt("transaction_id");
+                        String action_type = result_set.getString("action_type");
+                        Date borrow_date = result_set.getDate("borrow_date");
+                        String return_date_string = result_set.getString("return_date");
+                        String display_return_date = (return_date_string == null) ? "STILL NOT RETURNED"
+                                : return_date_string;
+
+                        System.out.println("TRANSACTION ID : " + transaction_id);
+                        System.out.println("BOOK ID : " + book_id);
+                        System.out.println("USER ID : " + user_id);
+                        System.out.println("ACTION TYPE : " + action_type);
+                        System.out.println("BORROW DATE : " + borrow_date);
+                        System.out.println("RETRUN DATE : " + display_return_date);
+
+                        System.out.println();
+                    }
+                    if (!found) {
+                        System.out.println("THERE IS NO TRANSACTION FOR THIS USER AND THIS BOOK.");
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void deleteTransaction(Connection connection) {
+        int transaction_id = 0;
+        String sql;
+        try {
+            System.out.println("TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+            while (!scanner.hasNextInt()) {
+                System.out.println("ENTER A VALID TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                scanner.nextLine();
+            }
+            transaction_id = Integer.parseInt(scanner.nextLine().trim());
+            if (transaction_id < 0) {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("ENTER A VALID TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                    scanner.nextLine();
+                }
+                transaction_id = Integer.parseInt(scanner.nextLine().trim());
+            }
+            sql = "DELETE FROM Transactions WHERE transaction_id = ?";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, transaction_id);
+                int row_affected = preapared_statment.executeUpdate();
+                if (row_affected > 0) {
+                    System.out.println("THE TRANSACTIONS DELETED SUCCESSFULLY.");
+                } else {
+                    System.out.println("WARNING : TRANSCTION FAILED TO BE DELETED.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateTransaction(Connection connection) {
+        int user_id_new = 0;
+        int book_id_new = 0;
+        int transaction_id = 0;
+        int book_id_old = 0;
+        String sql;
+        boolean is_borrowed;
+        Date return_date;
+
+        try {
+            System.out.println("TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+            while (!scanner.hasNextInt()) {
+                System.out.println("ENTER A VALID TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                scanner.nextLine();
+            }
+            transaction_id = Integer.parseInt(scanner.nextLine().trim());
+            if (transaction_id < 0) {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("ENTER A VALID TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                    scanner.nextLine();
+                }
+                transaction_id = Integer.parseInt(scanner.nextLine().trim());
+            }
+            System.out.println("NEW USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+            while (!scanner.hasNextInt()) {
+                System.out.println("ENTER A VALID NEW USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                scanner.nextLine();
+            }
+            user_id_new = Integer.parseInt(scanner.nextLine().trim());
+            if (user_id_new < 0) {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("ENTER A VALID NEW USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                    scanner.nextLine();
+                }
+                user_id_new = Integer.parseInt(scanner.nextLine().trim());
+            }
+
+            System.out.println("NEW BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+            while (!scanner.hasNextInt()) {
+                System.out.println("ENTER A VALID NEW BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                scanner.nextLine();
+            }
+            book_id_new = Integer.parseInt(scanner.nextLine().trim());
+            if (book_id_new < 0) {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("ENTER A VALID NEW BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
+                    scanner.nextLine();
+                }
+                book_id_new = Integer.parseInt(scanner.nextLine().trim());
+            }
+
+            sql = "SELECT book_id ,return_date FROM Transactions WHERE transaction_id = ?";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, transaction_id);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    if (result_set.next()) {
+                        book_id_old = result_set.getInt("book_id");
+                        return_date = result_set.getDate("return_date");
+
+                        if (return_date != null) {
+                            System.out.println(
+                                    " ERROR : THIS TRANSACTION IS CLOSED (THE BOOK WAS ALREADY RETURNED). HISTORICAL RECORDS CANNOT BE MODIFIED.");
+                            return;
+                        }
+                    } else {
+                        System.out.println("THERE IS NO TRANSACTION FOR THIS ID.");
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            sql = "SELECT user_id FROM Users WHERE user_id = ?";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, user_id_new);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    boolean found = false;
+                    if (result_set.next()) {
+                        found = true;
+                    }
+                    if (!found) {
+                        System.out.println("NO USER FOUND WITH USER ID : " + user_id_new);
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            sql = "SELECT is_borrowed FROM Books WHERE book_id = ? ";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, book_id_new);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    if (result_set.next()) {
+                        is_borrowed = result_set.getBoolean("is_borrowed");
+
+                        if (is_borrowed && book_id_new != book_id_old) {
+                            System.out.println("SORRY THIS NEW BOOK IS ALREADY BORROWED BY ANOTHER USER.");
+                            return;
+                        }
+                    } else {
+                        System.out.println("NO BOOK FOUND WITH BOOK ID : " + book_id_new);
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            sql = "UPDATE Transactions SET book_id = ? , user_id = ? WHERE transaction_id = ?";
+            try (PreparedStatement prepared_statement = connection.prepareStatement(sql)) {
+                prepared_statement.setInt(1, book_id_new);
+                prepared_statement.setInt(2, user_id_new);
+                prepared_statement.setInt(3, transaction_id);
+                int row_affected = prepared_statement.executeUpdate();
+                if (row_affected > 0) {
+                    System.out.println("OLD BOOK UPDATED TO NEW BOOK.");
+                    System.out.println("OLD USER UPDATED TO NEW USER.");
+                } else {
+                    System.out.println("WARNING : THE NEW BOOK FAILED TO BE UPDATED.");
+                    System.out.println("WARNING : THE NEW USER FAILED TO BE UPDATED.");
+                    return;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            if (book_id_new != book_id_old) {
+                sql = "UPDATE Books SET is_borrowed = ? WHERE book_id = ?";
+                try (PreparedStatement prepared_statement = connection.prepareStatement(sql)) {
+                    prepared_statement.setBoolean(1, false);
+                    prepared_statement.setInt(2, book_id_old);
+                    int row_affected = prepared_statement.executeUpdate();
+                    if (row_affected > 0)
+                        System.out.println("THE OLD BOOK NOW IS AVAILABLE.");
+                    else {
+                        System.out.println(
+                                "WARNING : THE OLD BOOK FAILED TO BE UPDATED AND ADDED TO THE CURRENT TRANSACTION.");
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                sql = "UPDATE Books SET is_borrowed = ? WHERE book_id = ?";
+                try (PreparedStatement prepared_statement = connection.prepareStatement(sql)) {
+                    prepared_statement.setBoolean(1, true);
+                    prepared_statement.setInt(2, book_id_new);
+                    int row_affected = prepared_statement.executeUpdate();
+                    if (row_affected > 0)
+                        System.out.println("THE NEW BOOK NOW IS BORROWED.");
+                    else {
+                        System.out.println("WARNING : THE NEW BOOK FAILED TO BE UPDATED TO BORROWED.");
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }
