@@ -34,7 +34,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
 
             if (connection != null) {
                 connection.close();
-                System.out.println("DATABASE CONNECTION CLOSED. GOODBYE!");
+                System.out.println("LIBRARY MANAGMENT SYSTEM CLOSED.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1003,30 +1003,6 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 scanner.nextLine(); // Clear newline
             }
 
-            sql = "SELECT book_id ,return_date FROM Transactions WHERE transaction_id = ?";
-            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
-                preapared_statment.setInt(1, transaction_id);
-                try (ResultSet result_set = preapared_statment.executeQuery()) {
-                    if (result_set.next()) {
-                        book_id_old = result_set.getInt("book_id");
-                        return_date = result_set.getDate("return_date");
-
-                        if (return_date != null) {
-                            System.out.println(
-                                    " ERROR : THIS TRANSACTION IS CLOSED (THE BOOK WAS ALREADY RETURNED). HISTORICAL RECORDS CANNOT BE MODIFIED.");
-                            return;
-                        }
-                    } else {
-                        System.out.println("THERE IS NO TRANSACTION FOR THIS ID.");
-                        return;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
             sql = "SELECT user_id FROM Users WHERE user_id = ?";
             try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
                 preapared_statment.setInt(1, user_id_new);
@@ -1043,6 +1019,58 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                     e.printStackTrace();
                 }
             } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            sql = "SELECT book_id FROM Books WHERE book_id = ? ";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, book_id_new);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    if (!result_set.next()) {
+                        System.out.println("NO BOOK FOUND WITH BOOK ID : " + book_id_new);
+                        return;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            sql = "SELECT book_id ,return_date FROM Transactions WHERE transaction_id = ?";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, transaction_id);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    if (result_set.next()) {
+                        book_id_old = result_set.getInt("book_id");
+                        return_date = result_set.getDate("return_date");
+
+                        if (return_date != null) {
+                            sql = "UPDATE Transactions SET book_id = ? , user_id = ? WHERE transaction_id = ?";
+                            try (PreparedStatement prepared_statement = connection.prepareStatement(sql)) {
+                                prepared_statement.setInt(1, book_id_new);
+                                prepared_statement.setInt(2, user_id_new);
+                                prepared_statement.setInt(3, transaction_id);
+                                int row_affected = prepared_statement.executeUpdate();
+                                if (row_affected > 0) {
+                                    System.out.println("INFORMATION UPDATED SUCCESSFULLY FOR A OLD ENDED TRANSACTION.");
+                                    return;
+                                } else {
+                                    System.out.println("WARNING : THE TRANSACTION FAILED TO BE UPDATED.");
+                                    return;
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        System.out.println("THERE IS NO TRANSACTION FOR THIS ID.");
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
