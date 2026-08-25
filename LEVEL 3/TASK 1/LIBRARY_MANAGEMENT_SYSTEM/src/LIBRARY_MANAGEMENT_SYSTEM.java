@@ -44,7 +44,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 scanner.nextLine();
             }
             title = scanner.nextLine();
-            while (!title.matches("^[a-zA-Z\\s]*$") || title.isEmpty()) {
+            while (!title.matches("^[a-zA-Z\\s]*$") || title.trim().isEmpty()) {
                 System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
@@ -55,7 +55,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
             System.out.println("AUTHOR (LETTERS AND SPACE) :");
 
             author = scanner.nextLine();
-            while (!author.matches("^[a-zA-Z\\s]*$") || author.isEmpty()) {
+            while (!author.matches("^[a-zA-Z\\s]*$") || author.trim().isEmpty()) {
                 System.out.println("ENTER A VALID AUTHOR (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID AUTHOR (LETTERS AND SPACE):");
@@ -93,7 +93,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 scanner.nextLine();
             }
             title = scanner.nextLine();
-            while (!title.matches("^[a-zA-Z\\s]*$") || title.isEmpty()) {
+            while (!title.matches("^[a-zA-Z\\s]*$") || title.trim().isEmpty()) {
                 System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
@@ -108,7 +108,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
 
         String sql = "DELETE FROM Books WHERE LOWER(title) =?";
         try (PreparedStatement prepared_statement = connection.prepareStatement(sql)) {
-            prepared_statement.setString(1, title.toUpperCase());
+            prepared_statement.setString(1, title.toLowerCase());
 
             int row_affected = prepared_statement.executeUpdate();
             if (row_affected > 0)
@@ -132,7 +132,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 scanner.nextLine();
             }
             title_old = scanner.nextLine();
-            while (!title_old.matches("^[a-zA-Z\\s]*$") || title_old.isEmpty()) {
+            while (!title_old.matches("^[a-zA-Z\\s]*$") || title_old.trim().isEmpty()) {
                 System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
@@ -143,7 +143,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
             System.out.println("TITLE NEW (LETTERS AND SPACE) :");
 
             title_new = scanner.nextLine();
-            while (!title_new.matches("^[a-zA-Z\\s]*$") || title_new.isEmpty()) {
+            while (!title_new.matches("^[a-zA-Z\\s]*$") || title_new.trim().isEmpty()) {
                 System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
@@ -154,7 +154,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
             System.out.println("AUTHOR NEW (LETTERS AND SPACE) :");
 
             author_new = scanner.nextLine();
-            while (!author_new.matches("^[a-zA-Z\\s]*$") || author_new.isEmpty()) {
+            while (!author_new.matches("^[a-zA-Z\\s]*$") || author_new.trim().isEmpty()) {
                 System.out.println("ENTER A VALID AUTHOR (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID AUTHOR (LETTERS AND SPACE):");
@@ -167,7 +167,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
             e.printStackTrace();
         }
 
-        String sql = "UPDATE Books SET title = ?, author = ? WHERE book_id = (SELECT book_id FROM Books WHERE title = ?) ";
+        String sql = "UPDATE Books SET title = ?, author = ? WHERE title = ? ";
         try (PreparedStatement prepared_statement = connection.prepareStatement(sql)) {
             prepared_statement.setString(1, title_new);
             prepared_statement.setString(2, author_new);
@@ -193,7 +193,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 scanner.nextLine();
             }
             title = scanner.nextLine();
-            while (!title.matches("^[a-zA-Z\\s]*$") || title.isEmpty()) {
+            while (!title.matches("^[a-zA-Z\\s]*$") || title.trim().isEmpty()) {
                 System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID TITLE (LETTERS AND SPACE):");
@@ -206,7 +206,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
             e.printStackTrace();
         }
 
-        String sql = "SELECT title, author, is_borrowed FROM  Books WHERE title = ?";
+        String sql = "SELECT title, author, is_borrowed, book_id FROM Books WHERE title = ?";
         try (PreparedStatement prepared_statement = connection.prepareStatement(sql)) {
             prepared_statement.setString(1, title);
             try (ResultSet result_set = prepared_statement.executeQuery()) {
@@ -250,7 +250,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 scanner.nextLine();
             }
             name = scanner.nextLine();
-            while (!name.matches("^[a-zA-Z\\s]*$") || name.isEmpty()) {
+            while (!name.matches("^[a-zA-Z\\s]*$") || name.trim().isEmpty()) {
                 System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
@@ -288,7 +288,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 scanner.nextLine();
             }
             name = scanner.nextLine();
-            while (!name.matches("^[a-zA-Z\\s]*$") || name.isEmpty()) {
+            while (!name.matches("^[a-zA-Z\\s]*$") || name.trim().isEmpty()) {
                 System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
@@ -302,13 +302,15 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 System.out.println("ENTER A VALID ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            id = Integer.parseInt(scanner.nextLine().trim());
-            if (id < 0) {
+            id = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+            if (id <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                id = Integer.parseInt(scanner.nextLine().trim());
+                id = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
 
         } catch (Exception e) {
@@ -341,21 +343,24 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 System.out.println("ENTER A VALID ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            id = Integer.parseInt(scanner.nextLine().trim());
-            if (id < 0) {
+            id = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+            if (id <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                id = Integer.parseInt(scanner.nextLine().trim());
+                id = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
+
             System.out.println("NAME (LETTERS AND SPACE) :");
             while (!scanner.hasNextLine()) {
                 System.out.println("ENTER A VALID NAME (LETTERS AND SPACE) :");
                 scanner.nextLine();
             }
             name = scanner.nextLine();
-            while (!name.matches("^[a-zA-Z\\s]*$") || name.isEmpty()) {
+            while (!name.matches("^[a-zA-Z\\s]*$") || name.trim().isEmpty()) {
                 System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
@@ -392,7 +397,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 scanner.nextLine();
             }
             name = scanner.nextLine();
-            while (!name.matches("^[a-zA-Z\\s]*$") || name.isEmpty()) {
+            while (!name.matches("^[a-zA-Z\\s]*$") || name.trim().isEmpty()) {
                 System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
                 while (!scanner.hasNextLine()) {
                     System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
@@ -407,7 +412,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
 
         String sql = "SELECT user_id, name FROM Users WHERE lower(name) = ?";
         try (PreparedStatement prepared_statement = connection.prepareStatement(sql)) {
-            prepared_statement.setString(1, name);
+            prepared_statement.setString(1, name.toLowerCase());
             try (ResultSet result_set = prepared_statement.executeQuery()) {
                 System.out.println("SEARCH RESULT : ");
                 boolean found = false;
@@ -441,7 +446,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
         System.out.println();
 
         System.out.println("CHOOSE A WORKSPACE (BOOKS,USERS,TRANSACTIONS) :");
-        String function = scanner.nextLine().trim();
+        function = scanner.nextLine().trim();
         while (!function.equalsIgnoreCase("BOOKS") && !function.equalsIgnoreCase("USERS")
                 && !function.equalsIgnoreCase("TRANSACTIONS")) {
             System.out.println("CHOOSE A VALID WORKSPACE (BOOKS,USERS,TRANSACTIONS) :");
@@ -470,7 +475,11 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
         System.out.println();
 
         System.out.println("CHOOSE A FUNCTION (ADD,UPDATE,DELETE,SEARCH) :");
-        String function = scanner.nextLine().trim();
+
+        // FIX: Removed the word 'String' here so it updates the global variable instead
+        // of creating a local one
+        function = scanner.nextLine().trim();
+
         while (!function.equalsIgnoreCase("ADD") && !function.equalsIgnoreCase("UPDATE")
                 && !function.equalsIgnoreCase("DELETE") && !function.equalsIgnoreCase("SEARCH")) {
             System.out.println("CHOOSE A VALID FUNCTION (ADD,UPDATE,DELETE,SEARCH) :");
@@ -556,13 +565,16 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 System.out.println("ENTER A VALID USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            user_id = Integer.parseInt(scanner.nextLine().trim());
-            if (user_id < 0) {
+            user_id = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+
+            if (user_id <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                user_id = Integer.parseInt(scanner.nextLine().trim());
+                user_id = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
 
             System.out.println("BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
@@ -570,20 +582,23 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 System.out.println("ENTER A VALID BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            book_id = Integer.parseInt(scanner.nextLine().trim());
-            if (book_id < 0) {
+            book_id = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+
+            if (book_id <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                book_id = Integer.parseInt(scanner.nextLine().trim());
+                book_id = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
 
             System.out.println("CHOOSE A FUNCTION (BORROW,RETURN) :");
-            String function = scanner.nextLine().trim();
-            while (!function.equalsIgnoreCase("BORROW") && !function.equalsIgnoreCase("RETURN")) {
+            String actionFunction = scanner.nextLine().trim(); // Renamed to avoid shadowing
+            while (!actionFunction.equalsIgnoreCase("BORROW") && !actionFunction.equalsIgnoreCase("RETURN")) {
                 System.out.println("CHOOSE A VALID FUNCTION (BORROW,RETURN) :");
-                function = scanner.nextLine().trim();
+                actionFunction = scanner.nextLine().trim();
             }
 
             sql = "SELECT user_id FROM Users WHERE user_id = ?";
@@ -625,98 +640,96 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 e.printStackTrace();
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (function.toUpperCase().equals("BORROW")) {
-            if (is_borrowed) {
-                System.out.println("SORRY THIS BOOK IS ALREADY BORROWED.");
-                return;
-            } else {
-                sql = "INSERT INTO Transactions (book_id,user_id,action_type) VALUES(?,?,?)";
-                try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
-                    preapared_statment.setInt(1, book_id);
-                    preapared_statment.setInt(2, user_id);
-                    preapared_statment.setString(3, "BORROW");
-                    int row_affected = preapared_statment.executeUpdate();
-                    if (row_affected > 0) {
-                        System.out.println("THE BORROW BORROWED SUCCESSFULLY.");
-                        return;
-                    } else {
-                        System.out.println("WARNING : THE TRANSACTION (BORROW) FAILED TO BE ADDED.");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                sql = "UPDATE Books SET is_borrowed = 1 WHERE book_id = ?";
-                try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
-                    preapared_statment.setInt(1, book_id);
-                    int row_affected = preapared_statment.executeUpdate();
-                    if (row_affected > 0) {
-                        System.out.println("THE BORROW NOW IS BORROWED.");
-                        return;
-                    } else {
-                        System.out.println("WARNING : THE PROCESS OF MAKING THE BORROWED IS FAILED.");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        } else {
-            if (!is_borrowed) {
-                System.out.println("THIS BOOKS IS NOT BORROWED.");
-            } else {
-                sql = "SELECT transaction_id FROM Transactions WHERE user_id = ? AND book_id =? AND return_date IS NULL";
-                try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
-                    preapared_statment.setInt(1, user_id);
-                    preapared_statment.setInt(2, book_id);
-                    try (ResultSet reasult_set = preapared_statment.executeQuery()) {
-                        if (!reasult_set.next()) {
-                            System.out.println(
-                                    "THIS BOOK IS NOT CURRENTLY BORROWED BY THIS USER OR NOT BORROWED AT ALL.");
+            if (actionFunction.toUpperCase().equals("BORROW")) {
+                if (is_borrowed) {
+                    System.out.println("SORRY THIS BOOK IS ALREADY BORROWED.");
+                    return;
+                } else {
+                    sql = "INSERT INTO Transactions (book_id,user_id,action_type) VALUES(?,?,?)";
+                    try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                        preapared_statment.setInt(1, book_id);
+                        preapared_statment.setInt(2, user_id);
+                        preapared_statment.setString(3, "BORROW");
+                        int row_affected = preapared_statment.executeUpdate();
+                        if (row_affected > 0) {
+                            System.out.println("THE BOOK BORROWED SUCCESSFULLY.");
                         } else {
-                            sql = "UPDATE Transactions SET return_date = ? WHERE book_id =? AND user_id = ? AND return_date IS NULL";
-                            try (PreparedStatement preapared_statment_ = connection.prepareStatement(sql)) {
-                                preapared_statment_.setDate(1, Date.valueOf(LocalDate.now()));
-                                preapared_statment_.setInt(2, book_id);
-                                preapared_statment_.setInt(3, user_id);
-                                int row_affected = preapared_statment_.executeUpdate();
-                                if (row_affected > 0) {
-                                    System.out.println("THE BOOK RETURNED SUCCESSFULLY");
-                                } else {
-                                    System.out.println("WARNING : THE TRANSACTION (RETURN) FAILED TO BE ADDED.");
-                                }
-
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                            sql = "UPDATE Books SET is_borrowed = 0 WHERE book_id = ?";
-                            try (PreparedStatement preapared_statment_ = connection.prepareStatement(sql)) {
-                                preapared_statment_.setInt(1, book_id);
-                                int row_affected = preapared_statment_.executeUpdate();
-                                if (row_affected > 0) {
-                                    System.out.println("THE BORROW NOW IS RETURNED AND AVAILABLE.");
-                                    return;
-                                } else {
-                                    System.out.println("WARNING : THE PROCESS OF MAKING THE BORROWED IS FAILED.");
-                                }
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-
+                            System.out.println("WARNING : THE TRANSACTION (BORROW) FAILED TO BE ADDED.");
+                            return;
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+
+                    sql = "UPDATE Books SET is_borrowed = 1 WHERE book_id = ?";
+                    try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                        preapared_statment.setInt(1, book_id);
+                        int row_affected = preapared_statment.executeUpdate();
+                        if (row_affected > 0) {
+                            System.out.println("THE BOOK IS NOW MARKED AS BORROWED.");
+                        } else {
+                            System.out.println("WARNING : THE PROCESS OF MAKING THE BOOK BORROWED FAILED.");
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            } else {
+                if (!is_borrowed) {
+                    System.out.println("THIS BOOK IS NOT BORROWED.");
+                } else {
+                    sql = "SELECT transaction_id FROM Transactions WHERE user_id = ? AND book_id =? AND return_date IS NULL";
+                    try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                        preapared_statment.setInt(1, user_id);
+                        preapared_statment.setInt(2, book_id);
+                        try (ResultSet reasult_set = preapared_statment.executeQuery()) {
+                            if (!reasult_set.next()) {
+                                System.out.println(
+                                        "THIS BOOK IS NOT CURRENTLY BORROWED BY THIS USER OR NOT BORROWED AT ALL.");
+                            } else {
+                                sql = "UPDATE Transactions SET return_date = ? WHERE book_id =? AND user_id = ? AND return_date IS NULL";
+                                try (PreparedStatement preapared_statment_ = connection.prepareStatement(sql)) {
+                                    preapared_statment_.setDate(1, Date.valueOf(LocalDate.now()));
+                                    preapared_statment_.setInt(2, book_id);
+                                    preapared_statment_.setInt(3, user_id);
+                                    int row_affected = preapared_statment_.executeUpdate();
+                                    if (row_affected > 0) {
+                                        System.out.println("THE BOOK RETURNED SUCCESSFULLY");
+                                    } else {
+                                        System.out.println("WARNING : THE TRANSACTION (RETURN) FAILED TO BE ADDED.");
+                                    }
+
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                                sql = "UPDATE Books SET is_borrowed = 0 WHERE book_id = ?";
+                                try (PreparedStatement preapared_statment_ = connection.prepareStatement(sql)) {
+                                    preapared_statment_.setInt(1, book_id);
+                                    int row_affected = preapared_statment_.executeUpdate();
+                                    if (row_affected > 0) {
+                                        System.out.println("THE BOOK NOW IS RETURNED AND AVAILABLE.");
+                                    } else {
+                                        System.out
+                                                .println("WARNING : THE PROCESS OF MAKING THE BOOK AVAILABLE FAILED.");
+                                    }
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void searchTransaction(Connection connection) {
@@ -729,13 +742,16 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 System.out.println("ENTER A VALID USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            user_id = Integer.parseInt(scanner.nextLine().trim());
-            if (user_id < 0) {
+            user_id = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+
+            if (user_id <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                user_id = Integer.parseInt(scanner.nextLine().trim());
+                user_id = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
 
             System.out.println("BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
@@ -743,14 +759,18 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 System.out.println("ENTER A VALID BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            book_id = Integer.parseInt(scanner.nextLine().trim());
-            if (book_id < 0) {
+            book_id = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+
+            if (book_id <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                book_id = Integer.parseInt(scanner.nextLine().trim());
+                book_id = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
+
             sql = "SELECT user_id FROM Users WHERE user_id = ?";
             try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
                 preapared_statment.setInt(1, user_id);
@@ -811,7 +831,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                         System.out.println("USER ID : " + user_id);
                         System.out.println("ACTION TYPE : " + action_type);
                         System.out.println("BORROW DATE : " + borrow_date);
-                        System.out.println("RETRUN DATE : " + display_return_date);
+                        System.out.println("RETURN DATE : " + display_return_date);
 
                         System.out.println();
                     }
@@ -840,14 +860,53 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 System.out.println("ENTER A VALID TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            transaction_id = Integer.parseInt(scanner.nextLine().trim());
-            if (transaction_id < 0) {
+            transaction_id = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+
+            if (transaction_id <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                transaction_id = Integer.parseInt(scanner.nextLine().trim());
+                transaction_id = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
+
+            sql = "SELECT book_id,return_date FROM Transactions WHERE transaction_id = ?";
+            try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
+                preapared_statment.setInt(1, transaction_id);
+                try (ResultSet result_set = preapared_statment.executeQuery()) {
+                    if (result_set.next()) {
+                        Date return_date = result_set.getDate("return_date");
+                        int book_id = result_set.getInt("book_id");
+
+                        // FIX: If the transaction is active, set the book back to available before
+                        // deleting
+                        if (return_date == null) {
+                            sql = "UPDATE Books SET is_borrowed = 0 WHERE book_id = ?";
+                            try (PreparedStatement preapared_statment_ = connection.prepareStatement(sql)) {
+                                preapared_statment_.setInt(1, book_id);
+                                int row_affected = preapared_statment_.executeUpdate();
+                                if (row_affected > 0) {
+                                    System.out.println("NOW THE BOOK IS AVAILABLE TO BE BORROWED.");
+                                } else {
+                                    System.out.println("WARNING : THE BOOK FAILED TO BE UPDATED TO AVAILABLE.");
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        System.out.println("NO TRANSACTION FOUND WITH THAT ID.");
+                        return; // Exit if transaction doesn't exist
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             sql = "DELETE FROM Transactions WHERE transaction_id = ?";
             try (PreparedStatement preapared_statment = connection.prepareStatement(sql)) {
                 preapared_statment.setInt(1, transaction_id);
@@ -855,7 +914,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 if (row_affected > 0) {
                     System.out.println("THE TRANSACTIONS DELETED SUCCESSFULLY.");
                 } else {
-                    System.out.println("WARNING : TRANSCTION FAILED TO BE DELETED.");
+                    System.out.println("WARNING : TRANSACTION FAILED TO BE DELETED.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -880,26 +939,33 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 System.out.println("ENTER A VALID TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            transaction_id = Integer.parseInt(scanner.nextLine().trim());
-            if (transaction_id < 0) {
+            transaction_id = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+
+            if (transaction_id <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID TRANSACTION ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                transaction_id = Integer.parseInt(scanner.nextLine().trim());
+                transaction_id = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
+
             System.out.println("NEW USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
             while (!scanner.hasNextInt()) {
                 System.out.println("ENTER A VALID NEW USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            user_id_new = Integer.parseInt(scanner.nextLine().trim());
-            if (user_id_new < 0) {
+            user_id_new = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+
+            if (user_id_new <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID NEW USER ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                user_id_new = Integer.parseInt(scanner.nextLine().trim());
+                user_id_new = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
 
             System.out.println("NEW BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
@@ -907,13 +973,16 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                 System.out.println("ENTER A VALID NEW BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
             }
-            book_id_new = Integer.parseInt(scanner.nextLine().trim());
-            if (book_id_new < 0) {
+            book_id_new = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+
+            if (book_id_new <= 0) {
                 while (!scanner.hasNextInt()) {
                     System.out.println("ENTER A VALID NEW BOOK ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                     scanner.nextLine();
                 }
-                book_id_new = Integer.parseInt(scanner.nextLine().trim());
+                book_id_new = scanner.nextInt();
+                scanner.nextLine(); // Clear newline
             }
 
             sql = "SELECT book_id ,return_date FROM Transactions WHERE transaction_id = ?";
@@ -991,8 +1060,7 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
                     System.out.println("OLD BOOK UPDATED TO NEW BOOK.");
                     System.out.println("OLD USER UPDATED TO NEW USER.");
                 } else {
-                    System.out.println("WARNING : THE NEW BOOK FAILED TO BE UPDATED.");
-                    System.out.println("WARNING : THE NEW USER FAILED TO BE UPDATED.");
+                    System.out.println("WARNING : THE TRANSACTION FAILED TO BE UPDATED.");
                     return;
                 }
             } catch (SQLException e) {
