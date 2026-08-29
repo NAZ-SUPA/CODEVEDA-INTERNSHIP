@@ -285,26 +285,10 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
 
     public static void deleteUser(Connection connection) {
 
-        String name = "";
         int id = 0;
 
-        System.out.println("NAME (LETTERS AND SPACE) :");
+        System.out.println("ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
         try {
-            while (!scanner.hasNextLine()) {
-                System.out.println("ENTER A VALID NAME (LETTERS AND SPACE) :");
-                scanner.nextLine();
-            }
-            name = scanner.nextLine();
-            while (!name.matches("^[a-zA-Z\\s]*$") || name.trim().isEmpty()) {
-                System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
-                while (!scanner.hasNextLine()) {
-                    System.out.println("ENTER A VALID NAME (LETTERS AND SPACE):");
-                    scanner.nextLine();
-                }
-                name = scanner.nextLine();
-            }
-
-            System.out.println("ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
             while (!scanner.hasNextInt()) {
                 System.out.println("ENTER A VALID ID (NUMBERS JUST POSITIVE AND NON ZERO) :");
                 scanner.nextLine();
@@ -324,11 +308,10 @@ public class LIBRARY_MANAGEMENT_SYSTEM {
             e.printStackTrace();
         }
 
-        String sql = "DELETE FROM Users WHERE name = ? AND user_id = ?";
+        String sql = "DELETE FROM Users WHERE user_id = ?";
 
         try (PreparedStatement prepared_statement = connection.prepareStatement(sql)) {
-            prepared_statement.setString(1, name);
-            prepared_statement.setInt(2, id);
+            prepared_statement.setInt(1, id);
             int row_affected = prepared_statement.executeUpdate();
             if (row_affected > 0)
                 System.out.println("USER DELETED SUCCESSFULLY.");
