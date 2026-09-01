@@ -1,84 +1,91 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "java",
-            "name": "server",
-            "request": "launch",
-            "mainClass": "server",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "client",
-            "request": "launch",
-            "mainClass": "client",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "LIBRARY_MANAGEMENT_SYSTEM",
-            "request": "launch",
-            "mainClass": "LIBRARY_MANAGEMENT_SYSTEM",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "BANK_ACCOUTN",
-            "request": "launch",
-            "mainClass": "BANK_ACCOUTN",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "BankingApplication",
-            "request": "launch",
-            "mainClass": "BankingApplication",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "BANKING_APPLICATION",
-            "request": "launch",
-            "mainClass": "BANKING_APPLICATION",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "FILE_READER_WRITER",
-            "request": "launch",
-            "mainClass": "FILE_READER_WRITER",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "EMPLOYEE_MANAGEMENT_SYSTEM",
-            "request": "launch",
-            "mainClass": "EMPLOYEE_MANAGEMENT_SYSTEM",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "FACTORIAL_CALCULATION_BY_RECURSION",
-            "request": "launch",
-            "mainClass": "FACTORIAL_CALCULATION_BY_RECURSION",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "NUMBER_GUESSING_GAME",
-            "request": "launch",
-            "mainClass": "NUMBER_GUESSING_GAME",
-            "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "BINARY_SEARCH_TREE",
+      "request": "launch",
+      "mainClass": "BINARY_SEARCH_TREE",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "server",
+      "request": "launch",
+      "mainClass": "server",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "client",
+      "request": "launch",
+      "mainClass": "client",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "LIBRARY_MANAGEMENT_SYSTEM",
+      "request": "launch",
+      "mainClass": "LIBRARY_MANAGEMENT_SYSTEM",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "BANK_ACCOUTN",
+      "request": "launch",
+      "mainClass": "BANK_ACCOUTN",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "BankingApplication",
+      "request": "launch",
+      "mainClass": "BankingApplication",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "BANKING_APPLICATION",
+      "request": "launch",
+      "mainClass": "BANKING_APPLICATION",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "FILE_READER_WRITER",
+      "request": "launch",
+      "mainClass": "FILE_READER_WRITER",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "EMPLOYEE_MANAGEMENT_SYSTEM",
+      "request": "launch",
+      "mainClass": "EMPLOYEE_MANAGEMENT_SYSTEM",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "FACTORIAL_CALCULATION_BY_RECURSION",
+      "request": "launch",
+      "mainClass": "FACTORIAL_CALCULATION_BY_RECURSION",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "NUMBER_GUESSING_GAME",
+      "request": "launch",
+      "mainClass": "NUMBER_GUESSING_GAME",
+      "projectName": "CODEVEDA-INTERNSHIP_2ee5ccaa"
+    },
+    {
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    }
+  ]
 }
